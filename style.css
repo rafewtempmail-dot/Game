@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Arial', sans-serif;
+}
+
+.game-container {
+    position: relative;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.score, .best-score {
+    background: #f0f0f0;
+    padding: 8px 15px;
+    border-radius: 5px;
+    flex: 1;
+    text-align: center;
+    margin: 0 5px;
+}
+
+#gameCanvas {
+    display: block;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background: #87CEEB;
+    cursor: pointer;
+}
+
+.game-over-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 40px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 100;
+    min-width: 250px;
+}
+
+.game-over-screen h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    animation: slideDown 0.5s ease-out;
+}
+
+.game-over-screen p {
+    font-size: 24px;
+    color: #FFD700;
+}
+
+.restart-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.restart-btn:hover {
+    background: #45a049;
+    transform: scale(1.05);
+}
+
+.restart-btn:active {
+    transform: scale(0.95);
+}
+
+.instructions {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* মোবাইল রেসপন্সিভ */
+@media (max-width: 600px) {
+    .game-container {
+        padding: 10px;
+    }
+    
+    #gameCanvas {
+        width: 100%;
+        height: auto;
+    }
+    
+    .score-board {
+        font-size: 14px;
+    }
+    
+    .game-over-screen {
+        padding: 30px;
+    }
+    
+    .game-over-screen h1 {
+        font-size: 36px;
+    }
+}
