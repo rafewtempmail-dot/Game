@@ -1,0 +1,72 @@
+name: Universal Android APK Builder
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  APP_NAME: "GAME"
+  APP_ID: "com.abc.io"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository Code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Set up Java 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Install Cordova CLI
+      run: npm install -g cordova
+
+    - name: Scaffold Safe Android Project
+      run: |
+        cordova create build_box ${{ env.APP_ID }} "${{ env.APP_NAME }}"
+        cd build_box
+        cordova platform add android@12.0.0 --nobackup
+
+    - name: Inject and Overwrite Web Assets
+      run: |
+        rm -rf build_box/www/*
+        cp -r * build_box/www/ || true
+        rm -rf build_box/www/build_box build_box/www/.github build_box/www/node_modules
+        cd build_box/www
+        if [ ! -f "index.html" ]; then
+          any_html=$(ls *.html | head -n 1)
+          if [ ! -z "$any_html" ]; then
+            mv "$any_html" index.html
+          else
+            echo "<h1>App is running successfully!</h1>" > index.html
+          fi
+        fi
+
+    - name: Process and Force Inject Custom Icon
+      run: |
+        if [ -f "icon.png" ]; then
+          cp icon.png build_box/res/icon.png || true
+          sed -i '/<\/widget>/i \    <platform name="android">\n        <icon src="res/icon.png" \/>\n    <\/platform>' build_box/config.xml
+        fi
+
+    - name: Compile Universal Debug APK
+      run: |
+        cd build_box
+        cordova build android --verbose
+
+    - name: Upload Installed Ready APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.APP_NAME }}-APK
+        path: build_box/platforms/android/app/build/outputs/apk/debug/app-debug.apk
